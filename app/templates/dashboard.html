@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Existing styles */
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.querySelector(".container");
+
+            // Simulate API call to fetch user data
+            fetch("/api/dashboard")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success_message) {
+                        const successMessage = document.createElement("div");
+                        successMessage.className = "alert-success";
+                        successMessage.innerText = data.success_message;
+                        container.prepend(successMessage);
+                    }
+                    document.querySelector("h1").innerText = `Welcome, ${data.username}`;
+                })
+                .catch(error => {
+                    console.error("Error fetching dashboard data:", error);
+                    container.innerHTML = "<p>Error loading dashboard. Please try again later.</p>";
+                });
+
+            // Logout button functionality
+            const logoutButton = document.getElementById("logout-btn");
+            logoutButton.addEventListener("click", () => {
+                fetch("/logout", { method: "POST" })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = "/signin"; // Redirect to signin page
+                        } else {
+                            console.error("Logout failed");
+                            alert("Logout failed. Please try again.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error during logout:", error);
+                        alert("An error occurred during logout. Please try again.");
+                    });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+        <p>This is your dashboard.</p>
+        <p><a href="/export">Export Data</a></p>
+        <p><a href="/import">Import Data</a></p>
+        <p class="logout"><button id="logout-btn">Logout</button></p>
+    </div>
+</body>
+</html>

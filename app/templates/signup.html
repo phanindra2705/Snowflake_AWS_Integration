@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <style>
+        /* Existing styles */
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector("form");
+
+            form.addEventListener("submit", event => {
+                event.preventDefault();
+
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+                const gmail = document.getElementById("gmail").value;
+
+                fetch("/api/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ username, password, gmail })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert(data.message);
+                            window.location.href = "/signin";
+                        } else {
+                            alert(data.error || "Signup failed");
+                        }
+                    })
+                    .catch(error => console.error("Error signing up:", error));
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Signup</h1>
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="gmail">Gmail:</label>
+            <input type="email" id="gmail" name="gmail" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="/signin">Sign in here</a></p>
+    </div>
+</body>
+</html>
